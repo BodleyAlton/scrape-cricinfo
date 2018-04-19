@@ -27,7 +27,7 @@ fours int,
 sixs int,
 ct int,
 st int,
-primary key (plid)
+primary key (plid),
 foreign key(plid) references player(plid) on delete cascade on update cascade
 );
 create table bowling(
@@ -45,6 +45,6 @@ sr float,
 fourw int,
 fivew int,
 tens int,
-primary key (plid)
+primary key (plid),
 foreign key(plid) references player(plid) on delete cascade on update cascade
 );

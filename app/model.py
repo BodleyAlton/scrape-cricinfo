@@ -22,7 +22,7 @@ class Player(db.Model):
         self.bowStyle=bowStyle
 
 class Batting(db.Model):
-    plid = db.Column(db.Integer,db.ForeignKey('Player.plid'),primary_key=True)
+    plid = db.Column(db.Integer,db.ForeignKey('player.plid'),primary_key=True)
     mat = db.Column(db.Integer)
     inns = db.Column(db.Integer)
     notout = db.Column(db.Integer)
@@ -56,7 +56,7 @@ class Batting(db.Model):
         self.st=st
 
 class Bowling(db.Model):
-    plid = db.Column(db.Integer,db.ForeignKey('Player.plid'),primary_key=True) 
+    plid = db.Column(db.Integer,db.ForeignKey('player.plid'),primary_key=True) 
     mat = db.Column(db.Integer)
     inns = db.Column(db.Integer)
     balls = db.Column(db.Integer)

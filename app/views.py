@@ -1,13 +1,23 @@
 from app import app
 from flask import request,jsonify,json
 from lxml import html
-import requests,random
+import requests,random,os
 from model import *
 from genalgo import *
 # Consider creating a text file with player ID's and creating a function which would 
 # read the ID's from the file and call scarpe(plid) with each ID
+
+@app.route("/plids",methods=["GET"])
+def get_plid():
+    with open(os.getcwd()+'/playerIds.txt', 'r') as plids:
+        for plid in plids:
+            print int(plid)
+            scrape(int(plid))
+            
+    return "done"
+
 #--------------Scrape player data from cric info and update database--------------
-@app.route("/scrape/<plid>",methods=["GET"])
+#@app.route("/scrape/<plid>",methods=["GET"])
 def scrape(plid):
     datav=[]
     page= requests.get("http://www.espncricinfo.com/westindies/content/player/%s.html"%(plid))
@@ -53,7 +63,9 @@ def updDataset(plid,name,born,teams,playerType,batStyle,bowStyle,datav):
     playerinf=Player(plid,name[0],yob,teams[0],playerType,batStyle,bowStyle)
     batting= Batting(plid,datav[0],datav[1],datav[2],datav[3],datav[4],datav[5],datav[6],datav[7],datav[8],datav[9],datav[10],datav[11],datav[12],datav[13])
     bowling= Bowling(plid,datav[14],datav[15],datav[16],datav[17],datav[18],bbi,bbm,datav[21],datav[22],datav[23],datav[24],datav[25],datav[26])
-    db.session.add_all([playerinf,batting,bowling])
+    db.session.add(playerinf)
+    db.session.commit()
+    db.session.add_all([batting,bowling])
     db.session.commit()
 #----------Creates Random Player [plid,[ptype],[stats(bat ave,bow ave, wkts)]]---------------
 def getRandPlayer():
