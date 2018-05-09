@@ -127,7 +127,7 @@ def tmfitness(t):
     tot=0 #running total of fitness of each player
     #Add each players fitness to tot
     for p in t: 
-        tot+=p[3] 
+        tot+=p[4] 
     # Apply penalty for constitution
     t.append(tot) #append team fitness to team
     

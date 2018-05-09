@@ -4,6 +4,8 @@ from lxml import html
 import requests,random,os
 from model import *
 from genalgo import *
+from comp import *
+
 # Consider creating a text file with player ID's and creating a function which would 
 # read the ID's from the file and call scarpe(plid) with each ID
 
@@ -74,8 +76,9 @@ def getRandPlayer():
     plrstats=[] #Player Stats
     rp=randPlid() #plid of randomly selected player
     #
-    for i in db.session.query(Player.plid,Player.ptype).filter_by(plid=rp).all():
+    for i in db.session.query(Player.plid,Player.ptype,Player.bowStyle).filter_by(plid=rp).all():
         randPlyr.append(i.plid)
+        b_style=i.bowStyle
         if "Batsman" in i.ptype or "batsman" in i.ptype:
             typ.append("batsman")
             for p in db.session.query(Batting.ave).filter_by(plid=rp).all():
@@ -85,6 +88,7 @@ def getRandPlayer():
             for p in db.session.query(Bowling.wkts,Bowling.ave).filter_by(plid=rp).all():
                 plrstats.append(p.ave)
                 plrstats.append(p.wkts)
+                
         if "Wicketkeeper" in i.ptype or "wicketkeeper" in i.ptype:
             typ.append("wicketkeeper")
             for p in db.session.query(Bowling.wkts).filter_by(plid=rp).all():
@@ -100,6 +104,7 @@ def getRandPlayer():
                 plrstats.append(p.wkts)
     randPlyr.append(typ)
     randPlyr.append(plrstats)
+    randPlyr.append(b_style)
     # print randPlyr
     return randPlyr
 #-------Selects a random plid-------
@@ -117,10 +122,13 @@ def randTeam():
     rndtm=[] # Randomly Selected team of 11 players
     pl=0 #Counter keeping track of the number of unique players added to the team
     while pl < 11:
+        # print "search"
         player= getRandPlayer() #Random Player
-        if dups(rndtm,player)== False: #Asserts that the player is unique to the team
+        if (dups(rndtm,player)== False)  & (i_comp(player)==True): #Asserts that the player is unique to the team and fits comp criteria
             pl+=1
+            print "PL:",pl
             rndtm.append(player) # Append unique player to the team
+            print "searching..."
     return  rndtm
     
  #-------Generate Random Population of 20 Teams------------
@@ -205,7 +213,15 @@ def ga():
 def main():
     ft=[] #Fittest teams
     # Terminal Condition (Bounded iterations)
-    for i in range(0,5):
+    for i in range(0,1):
         ft.append(ga()) #Execute GA
     ft.sort(reverse=True,key=getKey)
     return jsonify(ft)
+
+@app.route('/naive',methods=["GET"])
+def naive():
+    matches=naive_comp()
+    #"win_lose","batsman","wicketkeeper_batsman","batting_allrounder","bowler","bowling_allrounder","allrounder","wicketkeeper","right_hand_bat","left_hand_bat","spins","fast","medium","slow"
+    # loser= [0,4,0,0,2,0,3,0,9,2,4,2,4,3]
+    # convert(matches)
+    return n_comp(matches)
