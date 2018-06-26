@@ -5,6 +5,7 @@ import requests,random,os
 from model import *
 from genalgo import *
 from comp import *
+from sqlalchemy import or_,and_
 
 # Consider creating a text file with player ID's and creating a function which would 
 # read the ID's from the file and call scarpe(plid) with each ID
@@ -70,12 +71,12 @@ def updDataset(plid,name,born,teams,playerType,batStyle,bowStyle,datav):
     db.session.add_all([batting,bowling])
     db.session.commit()
 #----------Creates Random Player [plid,[ptype],[stats(bat ave,bow ave, wkts)]]---------------
-def getRandPlayer():
+def getRandPlayer(plids):
     randPlyr=[] # Random player
     typ=[] #Player Type
     plrstats=[] #Player Stats
-    rp=randPlid() #plid of randomly selected player
-    #
+    rp=randPlid(plids) #plid of randomly selected player
+    print "Get rnd player"
     for i in db.session.query(Player.plid,Player.ptype,Player.bowStyle).filter_by(plid=rp).all():
         randPlyr.append(i.plid)
         b_style=i.bowStyle
@@ -108,31 +109,33 @@ def getRandPlayer():
     # print randPlyr
     return randPlyr
 #-------Selects a random plid-------
-def randPlid():
-    plids=[] # player ID's
+def randPlid(plids):
+    # plids=[] # player ID's
     # Query all player ID's (pid) from Player table in database
-    for pid in db.session.query(Player.plid): 
-        plids.append(pid)
+    
+    # for pid in db.session.query(Player.plid).filter(  (or_(and_(Player.ptype=='Bowler', Player.bowStyle.like('%fast%')) , (and_(Player.ptype=='Bowler',Player.bowStyle.like('%medium%'))), (and_(Player.ptype=='Bowler',Player.bowStyle.like('%offbreak%'))),(Player.ptype.like('%batsman%')),(Player.ptype=='Allrounder') ))): 
+    #     plids.append(pid)
     rplidPos=random.randint(0,len(plids)-1) # Random index in plids
     rplid= plids[rplidPos][0] # Retreve plid at randomly selected index
     return rplid
     
 #--------Create random team of 11 players-------------
-def randTeam():
+def randTeam(plids):
     rndtm=[] # Randomly Selected team of 11 players
     pl=0 #Counter keeping track of the number of unique players added to the team
     while pl < 11:
         # print "search"
-        player= getRandPlayer() #Random Player
-        if (dups(rndtm,player)== False)  & (i_comp(player)==True): #Asserts that the player is unique to the team and fits comp criteria
-            pl+=1
-            print "PL:",pl
-            rndtm.append(player) # Append unique player to the team
-            print "searching..."
+        player= getRandPlayer(plids) #Random Player
+        if (dups(rndtm,player)== False):#  & (i_comp(player)==True): #Asserts that the player is unique to the team and fits comp criteria
+           if i_comp(rndtm,player):
+               pl+=1
+               print "PL:",pl
+               rndtm.append(player) # Append unique player to the team
+               print "searching..."
     return  rndtm
     
  #-------Generate Random Population of 20 Teams------------
-def getRndPop():
+def getRndPop(plids):
 #pop --> [ [team] ] ,[ [ [player] ] ], [ [ [plid,[ptype],[stats] ] ] ]
 #pop[] -> Team
 #pop[][] -> Player
@@ -148,7 +151,7 @@ def getRndPop():
     pop=[] # population 
     #Generate initiales population of 20 teams
     for i in range(0,20):
-        pop.append(randTeam())
+        pop.append(randTeam(plids))
     return pop
     
 #--------Determine the fitness of each player and of each team n population--------
@@ -178,8 +181,8 @@ def dropFitness(pop):
                 del p[-1]
 
 #-------Executes GA-------
-def ga():
-    pop=getRndPop() #Initialise population
+def ga(plids):
+    pop=getRndPop(plids) #Initialise population
     # dropFitness(pop) 
     fitness(pop) #Evaluate fitness of each player and team in population
     pop.sort(reverse=True,key=getKey) #Sorts population in decending order of fitness values
@@ -198,7 +201,7 @@ def ga():
     #Execute mutation function with probability at 5% of pop size
     for i in range(0,int(0.05*len(pop))):
         t= randInd(pop) #Select index of team randomly
-        mutate(pop[t],getRandPlayer()) # mutate player in team 
+        mutate(pop[t],getRandPlayer(plids)) # mutate player in team 
     fitness(pop)
     pop.sort(reverse=True,key=getKey)
     fitest=pop[0] #Select fittest team in population
@@ -212,9 +215,13 @@ def ga():
 #-----Main Function
 def main():
     ft=[] #Fittest teams
+    plids=[]
+    for pid in db.session.query(Player.plid).filter(  (or_(and_(Player.ptype=='Bowler', Player.bowStyle.like('%fast%')) , (and_(Player.ptype=='Bowler',Player.bowStyle.like('%medium%'))), (and_(Player.ptype=='Bowler',Player.bowStyle.like('%offbreak%'))),(Player.ptype.like('%batsman%')),(Player.ptype=='Allrounder') ))): 
+        plids.append(pid)
+        print plids
     # Terminal Condition (Bounded iterations)
     for i in range(0,1):
-        ft.append(ga()) #Execute GA
+        ft.append(ga(plids)) #Execute GA
     ft.sort(reverse=True,key=getKey)
     return jsonify(ft)
 

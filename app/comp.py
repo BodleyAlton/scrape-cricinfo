@@ -2,11 +2,7 @@ import os
 from difflib import SequenceMatcher
 import collections
 
-mb=2# medium bowler
-fs=4#fast
-bm=3#batsman
-wk=1#wicket keeper
-al=1#allrounder
+
     
 def naive_comp():
     matchlst=[]
@@ -58,37 +54,60 @@ def n_comp(matches):
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
-def i_comp(player):
-    global mb
-    global fs
-    global bm
-    global wk
-    global al
-    ptype=player[1][0]
-    b_style=player[3]
-    if ptype=="bowler":
-        if ("medium" in b_style) & (mb>0):
-            mb-=1
-            print "mb:",mb
-            return True
-        elif ("fast" in b_style) & (fs>0):
-            fs-=1
-            print "fs:",fs
-            return True
-    elif (ptype=="batsman")&(bm>0):
-        bm-=1
-        print "bm:",bm
-        return True
-    elif ("wicketkeeper" in ptype)&(wk>0):
-        wk-=1
-        print "wk:",wk
-        return True
-    elif (ptype=="allrounder")&(al>0):
-        al-=1
-        print "al:",al
+mb=2# medium bowler
+mmb=0
+fs=3#fast
+ffs=0
+of=1#offbreak
+oof=0
+bm=3#batsman
+bbm=0
+wk=1#wicket keeper
+wwk=0
+al=1#allrounder
+aal=0
+def i_comp(team,player):
+    mb=2# medium bowler
+    mmb=0
+    fs=3#fast
+    ffs=0
+    of=1#offbreak
+    oof=0
+    bm=3#batsman
+    bbm=0
+    wk=1#wicket keeper
+    wwk=0
+    al=1#allrounder
+    aal=0
+    ptypes=[]
+    print team
+    print player
+    for p in team:
+        if p[1][-1]=='bowler':
+            if 'medium-fast' in p[3] or p[3]=='Right-arm medium':
+                mmb+=1
+            elif 'fast-medium' in p[3]:
+                ffs+=1
+        if 'wicketkeeper' in p[1][-1]:
+            wwk+=1
+        if 'batsman' in p[1][-1]:
+            bbm+=1
+            if p[3]!=None:
+                if 'offbreak' in p[3]:
+                    oof+=1
+        if p[1][-1]=='allrounder':
+            aal+=1
+        print "mmb",mmb
+        print "ffs",ffs
+        print "wwk",wwk
+        print "bbm",bbm
+        print "oof",oof
+        print "aal",aal
+    if mmb<mb+1 and wwk<wk+1 and ffs<fs+1 and bbm<bm+1 and oof<of+1 and aal<al+1:
         return True
     else:
         return False
-    # print "PLAYER:",player
-    # return True
-    
+    #     ptypes.append(p[3])
+    # count=collections.Counter(ptypes)
+    # print "COUNT:",count
+    return True

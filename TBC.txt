@@ -3,3 +3,5 @@ Work to  be done:
 1. Refine ranges for fitness function
 2. Apply penlity for constittion 
 3. Fitness values for players are being appended multiple times in some cases -> Investigate
+
+Additional players for dataset - https://en.wikipedia.org/wiki/Jamaica_national_cricket_team - Add Brandon King
