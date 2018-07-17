@@ -18,7 +18,9 @@
 --
 -- Table structure for table `batting`
 --
-
+DROP DATABASE IF EXISTS cric;
+create database cric;
+use cric;
 DROP TABLE IF EXISTS `batting`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

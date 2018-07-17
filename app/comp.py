@@ -3,7 +3,7 @@ from difflib import SequenceMatcher
 import collections
 
 
-    
+
 def naive_comp():
     matchlst=[]
     for file in os.listdir(os.getcwd()+"/app/data"):
@@ -12,24 +12,24 @@ def naive_comp():
             team=[]
             for match in matches:
                 team.append([match])
-            matchlst.append(team)    
+            matchlst.append(team)
     return matchlst
-    
+
 def convert(matches):
     match=[]
-    print "LS",matches[0][0][13]
+    print ("LS",matches[0][0][13])
     for m in matches:
         team=[]
         for t in m:
             for y in t:
                 y[13].translate(None,'\n')
-                
+
             p=t[0].split(",")
             team.append(p)
         match.append(team)
         c=collections.Counter(match)
-        print "Count:",c
-    print "match:",match
+        print ("Count:",c)
+    print ("match:",match)
 
 def n_comp(matches):
     sim=[]
@@ -46,9 +46,9 @@ def n_comp(matches):
     # print winners
     for m in winners:
         sim.append(similar(winners[0],m))
-    print "MATCH:",sim[10]
+    print ("MATCH:",sim[10])
     del sim[0]
-    print "Max:",max(sim)
+    print ("Max:",max(sim))
     return winners[10]
 
 def similar(a, b):
@@ -80,8 +80,8 @@ def i_comp(team,player):
     al=1#allrounder
     aal=0
     ptypes=[]
-    print team
-    print player
+    print (team)
+    print (player)
     for p in team:
         if p[1][-1]=='bowler':
             if 'medium-fast' in p[3] or p[3]=='Right-arm medium':
@@ -97,12 +97,12 @@ def i_comp(team,player):
                     oof+=1
         if p[1][-1]=='allrounder':
             aal+=1
-        print "mmb",mmb
-        print "ffs",ffs
-        print "wwk",wwk
-        print "bbm",bbm
-        print "oof",oof
-        print "aal",aal
+        print ("mmb",mmb)
+        print ("ffs",ffs)
+        print ("wwk",wwk)
+        print ("bbm",bbm)
+        print ("oof",oof)
+        print ("aal",aal)
     if mmb<mb+1 and wwk<wk+1 and ffs<fs+1 and bbm<bm+1 and oof<of+1 and aal<al+1:
         return True
     else:

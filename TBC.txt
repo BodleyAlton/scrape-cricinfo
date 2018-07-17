@@ -1,7 +1,9 @@
 Work to  be done:
 ------FItness-------
 1. Refine ranges for fitness function
-2. Apply penlity for constittion 
+2. Apply penlity for constittion
 3. Fitness values for players are being appended multiple times in some cases -> Investigate
+
+scikit-learn- http://stackabuse.com/decision-trees-in-python-with-scikit-learn/
 
 Additional players for dataset - https://en.wikipedia.org/wiki/Jamaica_national_cricket_team - Add Brandon King
