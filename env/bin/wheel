@@ -1,4 +1,4 @@
-#!/home/alton/Documents/CricDeSS/scrape-cricinfo/env/bin/python2
+#!"/home/alton/Documents/CricDeSS/Res Artifact/scrape-cricinfo/env/bin/python2"
 
 # -*- coding: utf-8 -*-
 import re

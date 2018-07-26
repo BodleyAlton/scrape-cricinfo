@@ -6,11 +6,11 @@ from app.model import *
 from app.genalgo import *
 from app.comp import *
 from app.dmModel import *
+from app.Dtrans import *
 from sqlalchemy import or_,and_
 
 # Consider creating a text file with player ID's and creating a function which would
 # read the ID's from the file and call scarpe(plid) with each ID
-
 @app.route("/plids",methods=["GET"])
 def get_plid():
     with open(os.getcwd()+'/playerIds.txt', 'r') as plids:
@@ -19,6 +19,11 @@ def get_plid():
             scrape(int(plid))
 
     return "done"
+
+@app.route('/data_trans',methods=["GET"])
+def data_trans():
+    print("data")
+    return(getData())
 
 #--------------Scrape player data from cric info and update database--------------
 #@app.route("/scrape/<plid>",methods=["GET"])
@@ -71,6 +76,7 @@ def updDataset(plid,name,born,teams,playerType,batStyle,bowStyle,datav):
     db.session.commit()
     db.session.add_all([batting,bowling])
     db.session.commit()
+
 #----------Creates Random Player [plid,[ptype],[stats(bat ave,bow ave, wkts)]]---------------
 def getRandPlayer(plids):
     randPlyr=[] # Random player
@@ -242,9 +248,4 @@ def naive():
 def dm():
     # while(decTree()<0.9):
     #     dmModel()
-
     return (decTree())
-# @app.route('/model',methods=['GET'])
-# def decT():
-#     decTree('working_model.sav')
-#     print('OK')

@@ -1,4 +1,4 @@
-#!/home/alton/Documents/CricDeSS/scrape-cricinfo/env/bin/python
+#!/home/alton/Documents/CricDeSS/Res Artifact/scrape-cricinfo/env/bin/python
 
 import sys
 import getopt

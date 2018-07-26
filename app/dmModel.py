@@ -26,7 +26,7 @@ def dmModel():
 
     #Generate model using dynamic split
     file='working_model.sav'
-    data=pd.read_csv('/home/alton/Documents/Cricdess Data/dataV1.csv',delimiter=',')
+    data=pd.read_csv('mod_data.csv',delimiter=',')
     X=data.drop('win_lose',axis=1)
     Y=data['win_lose']
     # print (Y)
@@ -78,3 +78,4 @@ def decTree():
     matrix=pd.DataFrame(confusion_matrix(y_test, y_pred),columns=['0','1'],index=['0','1'])
     print (result)
     return ("Accuracy of the model: "+str(result))
+    # return(result)

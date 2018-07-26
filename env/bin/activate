@@ -40,7 +40,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/alton/Documents/CricDeSS/scrape-cricinfo/env"
+VIRTUAL_ENV="/home/alton/Documents/CricDeSS/Res Artifact/scrape-cricinfo/env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
