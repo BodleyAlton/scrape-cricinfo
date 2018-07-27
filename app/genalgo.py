@@ -1,12 +1,16 @@
 import random
+from app.dtModel import model_dt
 #--------Calculat fitness of player----
 def plfitness(p):
     fitness=0
 #calculate fitnes of player and append to player.
     ptype=p[1] # player Type
+    print("ptype"+str(ptype))
     stats=p[2] # Player Statistics(based on player type)
+    bowStl=p[3][0]
+    batStyl=p[3][1]
     # Calculate fitness for batsman
-    if "batsman" in ptype: 
+    if "batsman" in ptype:
         fitness+=0.4
         batave=stats[0]
         if batave < 20:
@@ -55,7 +59,7 @@ def plfitness(p):
         if wkts < 5 or bave<15:
             fitness+=0.1
         elif 5<= wkts<=10 or 15<bave<=20:
-            fitness+=0.2 
+            fitness+=0.2
         elif 11<= wkts<=20 or 21<=bave<=25:
             fitness+=0.5
         elif 21<= wkts<=40 or 26<=bave<=28:
@@ -97,7 +101,7 @@ def plfitness(p):
         if wkts < 5 or bave<15:
             fitness+=0.1
         elif 5<= wkts<=10 or 15<bave<=20:
-            fitness+=0.2 
+            fitness+=0.2
         elif 11<= wkts<=20 or 21<=bave<=25:
             fitness+=0.5
         elif 21<= wkts<=40 or 26<=bave<=28:
@@ -121,29 +125,31 @@ def plfitness(p):
         elif wkts<160 or bave<53:
             fitness+=2
     p.append(fitness)
-    
+
 #------Calculate team fitness (sum of each players fitness)-----
 def tmfitness(t):
     tot=0 #running total of fitness of each player
     #Add each players fitness to tot
-    for p in t: 
-        tot+=p[4] 
+    for p in t:
+        tot+=p[4]
+    # call DT model implementation; function shhould return a value which should be added to tot
+    tot+= model_dt(t) #add points for composition
     # Apply penalty for constitution
     t.append(tot) #append team fitness to team
-    
+
 #-----Crossover----
 # @ Input: 2 Teams
 # @Output: 1 Team....Crossover of teams(T1 X T2)
 def crossover(T1,T2):
     cpt=random.randint(1,10) #Selects a random cutpoint in range(1,10)
     #Splice list at cpt
-    T1R=T1[cpt:] 
+    T1R=T1[cpt:]
     T1L=T1[:cpt]
     T2R=T2[cpt:]
     T2L=T2[cpt:]
     # Perform cross over f it will not introduce a duplicate player
     for i in T2R:
-        if dups(T1L,i): 
+        if dups(T1L,i):
             return True
         else:
             T1L.append(i)
@@ -156,7 +162,7 @@ def mutate(Team,plyr):
     pt=random.randint(0,10) #Select random player in team to be replaced
     if plyr in Team: #Assert Player to be added is not already on team
         return True
-    del Team[pt] #remove randomly selected player 
+    del Team[pt] #remove randomly selected player
     Team.append(plyr) # Add new player to team
 
 #----Determine whether a player is already on a team

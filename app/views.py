@@ -17,7 +17,6 @@ def get_plid():
         for plid in plids:
             print (int(plid))
             scrape(int(plid))
-
     return "done"
 
 @app.route('/data_trans',methods=["GET"])
@@ -82,11 +81,13 @@ def getRandPlayer(plids):
     randPlyr=[] # Random player
     typ=[] #Player Type
     plrstats=[] #Player Stats
+    style=[]#Player Bowling and Battting style
     rp=randPlid(plids) #plid of randomly selected player
     print ("Get rnd player")
-    for i in db.session.query(Player.plid,Player.ptype,Player.bowStyle).filter_by(plid=rp).all():
+    for i in db.session.query(Player.plid,Player.ptype,Player.bowStyle,Player.batStyle).filter_by(plid=rp).all():
         randPlyr.append(i.plid)
-        b_style=i.bowStyle
+        style.append(i.bowStyle)
+        style.append(i.batStyle)
         if "Batsman" in i.ptype or "batsman" in i.ptype:
             typ.append("batsman")
             for p in db.session.query(Batting.ave).filter_by(plid=rp).all():
@@ -96,7 +97,6 @@ def getRandPlayer(plids):
             for p in db.session.query(Bowling.wkts,Bowling.ave).filter_by(plid=rp).all():
                 plrstats.append(p.ave)
                 plrstats.append(p.wkts)
-
         if "Wicketkeeper" in i.ptype or "wicketkeeper" in i.ptype:
             typ.append("wicketkeeper")
             for p in db.session.query(Bowling.wkts).filter_by(plid=rp).all():
@@ -112,7 +112,7 @@ def getRandPlayer(plids):
                 plrstats.append(p.wkts)
     randPlyr.append(typ)
     randPlyr.append(plrstats)
-    randPlyr.append(b_style)
+    randPlyr.append(style)
     # print randPlyr
     return randPlyr
 #-------Selects a random plid-------
@@ -223,12 +223,13 @@ def ga(plids):
             p.insert(0,n)
     return fitest
 
-@app.route('/rp',methods=["GET"])
+@app.route('/main',methods=["GET"])
 #-----Main Function
 def main():
     ft=[] #Fittest teams
     plids=[]
-    for pid in db.session.query(Player.plid).filter(  (or_(and_(Player.ptype=='Bowler', Player.bowStyle.like('%fast%')) , (and_(Player.ptype=='Bowler',Player.bowStyle.like('%medium%'))), (and_(Player.ptype=='Bowler',Player.bowStyle.like('%offbreak%'))),(Player.ptype.like('%batsman%')),(Player.ptype=='Allrounder') ))):
+    for pid in db.session.query(Player.plid):
+    # for pid in db.session.query(Player.plid).filter(  (or_(and_(Player.ptype=='Bowler', Player.bowStyle.like('%fast%')) , (and_(Player.ptype=='Bowler',Player.bowStyle.like('%medium%'))), (and_(Player.ptype=='Bowler',Player.bowStyle.like('%offbreak%'))),(Player.ptype.like('%batsman%')),(Player.ptype=='Allrounder') ))):
         plids.append(pid)
         print (plids)
     # Terminal Condition (Bounded iterations)
