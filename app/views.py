@@ -247,6 +247,8 @@ def naive():
     return n_comp(matches)
 @app.route('/dm',methods=["GET"])
 def dm():
-    # while(decTree()<0.9):
-    #     dmModel()
-    return (decTree())
+    while(decTree()<0.9):
+        dmModel()
+    # dmModel()
+    # return (decTree())
+    return "OK"

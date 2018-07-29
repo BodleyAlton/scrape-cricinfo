@@ -89,7 +89,10 @@ def model_dt(t):
                 cslow+=1
             if set(((i.lower()).split(" "))).intersection(set(googly)):
                 cgoogly+=1
-
+    info=[clspin,crspin,cfast,cmedium,cslow,cgoogly,cbat_rh,cbat_lh,cop_bm,cmo_bm,cto_bm,cbowl,cbat,callr,cbow_all,cbat_all,cwk]#,['win_lose','lspin','rspin','fast','medium','slow','googly','bat_rh','bat_lh','op_bm','mo_bm','to_bm','bowl','bats','allr','bow_all','bat_all','wk'])
+    entTModel(crspin,cslow,cmo_bm,cbat)
+    
+def entTModel(crspin,cslow,cmo_bm,cbat):
     if cmo_bm<=1:
         if cbat<=4:
             if crspin <= 3:
